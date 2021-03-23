@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from django.shortcuts import reverse
 # Create your models here.
 from products.models import Product
 from customers.models import Customer
@@ -31,6 +31,12 @@ class Sale(models.Model):
     created = models.DateTimeField(blank=True)
     updated = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'Salesman:{self.salesman}-{self.total_price}'
+
+    def get_absolute_url(self):
+        return reverse('sales:detail', kwargs={'pk': self.pk})
+
     def save(self, *args,  **kwargs):
         if self.transaction_id == "":
             self.transaction_id = generate_code()
@@ -40,9 +46,6 @@ class Sale(models.Model):
 
     def get_positions(self):
         return self.positions.all()
-
-    def __str__(self):
-        return f'Salesman:{self.salesman}-{self.total_price}'
 
 
 class CSV(models.Model):
